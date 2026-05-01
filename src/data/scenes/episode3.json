@@ -1,0 +1,118 @@
+{
+  "sceneId": "3_1_rooftop",
+  "episode": 3,
+  "title": "Серия 3. Крыша инноваций",
+  "background": "rooftop_panorama_360",
+  "initialMusic": "deadline_wind",
+  "entryTextToken": "ROOFTOP_ENTRY",
+  "entryText": "На крыше гудит антенна роботизации. Закат выглядит так, будто его купили по подписке.",
+  "objects": [
+    {
+      "id": "antenna",
+      "nameToken": "ANTENNA_LABEL",
+      "name": "Антенна роботизации",
+      "position": { "x": 360, "y": 250, "radius": 72 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "осмотреть",
+          "condition": "always",
+          "textToken": "ANTENNA_DESC",
+          "text": "Антенна передаёт всем сотрудникам мысль: «Оптимизация неизбежна». Мысль плохо ловится через сарказм.",
+          "result": { "addFlag": "antenna_examined" }
+        },
+        {
+          "action": "retune",
+          "label": "перенастроить",
+          "condition": "hasFlag:antenna_examined",
+          "textToken": "ANTENNA_RETUNE",
+          "text": "Ты перенастраиваешь частоту на корпоративный джаз. Роботизация начинает свинговать.",
+          "result": { "addFlag": "antenna_retuned", "chaosDelta": 4, "timeDelta": -5 },
+          "animation": "signal-wave"
+        }
+      ]
+    },
+    {
+      "id": "sunset",
+      "nameToken": "SUNSET_LABEL",
+      "name": "Закат",
+      "position": { "x": 835, "y": 190, "radius": 82 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "посмотреть",
+          "condition": "always",
+          "textToken": "SUNSET_DESC",
+          "text": "Закат прекрасен. Даже корпорация не смогла поставить на него водяной знак, хотя пыталась.",
+          "result": { "addFlag": "sunset_examined", "relationshipDelta": { "self": 1 } }
+        },
+        {
+          "action": "delay",
+          "label": "попросить подождать",
+          "condition": "hasFlag:sunset_examined",
+          "textToken": "SUNSET_DELAY",
+          "text": "Закат делает паузу на два вдоха. Иногда вселенная тоже устала от дедлайнов.",
+          "result": { "timeDelta": 12, "chaosDelta": 1 }
+        }
+      ]
+    },
+    {
+      "id": "intern",
+      "nameToken": "INTERN_LABEL",
+      "name": "Стажёр с пультом",
+      "position": { "x": 1190, "y": 335, "radius": 60 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "поговорить",
+          "condition": "always",
+          "textToken": "INTERN_DESC",
+          "text": "Стажёр держит пульт с одной красной кнопкой и выражением человека, которому сказали «просто не нажимай».",
+          "result": { "addFlag": "intern_met" }
+        },
+        {
+          "action": "swap_remote",
+          "label": "подменить пульт",
+          "condition": "hasFlag:intern_met",
+          "textToken": "REMOTE_SWAP",
+          "text": "Ты подменяешь пульт на калькулятор. Стажёр облегчённо считает чаевые судьбе.",
+          "result": { "addFlag": "remote_swapped", "chaosDelta": 2, "relationshipDelta": { "intern": 3 } }
+        }
+      ]
+    }
+  ],
+  "exits": [],
+  "qteEvent": {
+    "trigger": "afterAllObjectsExamined",
+    "promptToken": "ROBOTIZATION_PROMPT",
+    "prompt": "Антенна пищит. Пульт мигает. Один выбор выглядит пустым, но очень корпоративным.",
+    "timeLimit": 2,
+    "choices": [
+      {
+        "action": "press_jazz",
+        "textToken": "PRESS_JAZZ",
+        "text": "Ты запускаешь джазовый протокол. Сотрудники роботизируются в свободном размере, то есть никак.",
+        "result": { "setFlag": "robotization_delayed", "chaosDelta": 5, "qteSuccess": true },
+        "animation": "finale-wave"
+      },
+      {
+        "action": "quote_policy",
+        "textToken": "QUOTE_POLICY",
+        "text": "Ты цитируешь политику безопасности. Система зависает, пытаясь найти автора.",
+        "result": { "setFlag": "policy_loop", "suspicionDelta": 1, "qteSuccess": true }
+      },
+      {
+        "action": "hand_to_intern",
+        "textToken": "HAND_TO_INTERN",
+        "text": "Стажёр нажимает «отмена» с такой силой, что карьерная лестница вздрагивает.",
+        "result": { "setFlag": "intern_saved_day", "relationshipDelta": { "intern": 3 }, "qteSuccess": true }
+      },
+      {
+        "action": "empty_choice",
+        "textToken": "EMPTY_CHOICE",
+        "text": "Ты выбираешь пустой пункт. Система любит пустые пункты и списывает с таймера штраф.",
+        "result": { "timeDelta": -15, "suspicionDelta": 2, "qteSuccess": false }
+      }
+    ]
+  }
+}

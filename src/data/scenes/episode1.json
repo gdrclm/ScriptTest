@@ -1,0 +1,514 @@
+{
+  "sceneId": "1_1_intern_room",
+  "episode": 1,
+  "title": "Комната стажёра",
+  "background": "intern_room_panorama",
+  "initialMusic": "dormant_evil_room",
+  "entryTextToken": "ROOM_ENTRY",
+  "entryText": "Пижама. Овечки. Осуждают.",
+  "objects": [
+    {
+      "id": "room",
+      "nameToken": "ROOM_LABEL",
+      "name": "Комната",
+      "position": { "x": 885, "y": 455, "radius": 1 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть комнату",
+          "condition": "always",
+          "textToken": "ROOM_DESC",
+          "text": "Панорама комнаты. Зеркало, шкаф, графин, будильник, кровать, тумба и дверь выглядят как граф проблем.",
+          "result": { "addFlag": "room_examined" },
+          "soundEvent": "ui_page"
+        }
+      ]
+    },
+    {
+      "id": "mirror",
+      "nameToken": "MIRROR_LABEL",
+      "name": "Зеркало",
+      "hoverText": "Подсказка",
+      "position": { "x": 1010, "y": 418, "radius": 72, "width": 128, "height": 276, "labelY": 286 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Подойти к зеркалу",
+          "condition": "always",
+          "textToken": "MIRROR_SUBSCENE",
+          "text": "Крупный план мутного зеркала. Пижама. Овечки. Осуждают.",
+          "result": { "addFlag": "mirror_examined" },
+          "animation": "cyan-pulse",
+          "showInChoices": false
+        },
+        {
+          "action": "evil_face",
+          "label": "Сделать злодейское лицо",
+          "condition": "notFlag:triedVillainFace&notFlag:normalFaceChosen",
+          "choiceScope": "local",
+          "textToken": "MIRROR_EVIL_FACE",
+          "text": "Не вышло. Овечки смеются.",
+          "result": { "addFlags": ["triedVillainFace", "pajamaPocketUnlocked"], "chaosDelta": 1 },
+          "animation": "cyan-flare"
+        },
+        {
+          "action": "normal_face",
+          "label": "Обычное лицо",
+          "condition": "notFlag:normalFaceChosen&notFlag:triedVillainFace",
+          "choiceScope": "local",
+          "textToken": "MIRROR_NORMAL_FACE",
+          "text": "Овечки зевают.",
+          "result": { "addFlag": "normalFaceChosen" }
+        },
+        {
+          "action": "wipe_spot",
+          "label": "Стереть пятно",
+          "condition": "notFlag:code_0918",
+          "choiceScope": "local",
+          "textToken": "MIRROR_WIPE_SPOT",
+          "text": "Отпечаток пальца. Под пятном: 0918.",
+          "result": { "addFlag": "code_0918" }
+        },
+        {
+          "action": "take_note",
+          "label": "Достать из кармана",
+          "condition": "hasFlag:pajamaPocketUnlocked&notItem:crumpled_note",
+          "choiceScope": "local",
+          "textToken": "MIRROR_TAKE_NOTE",
+          "text": "Что-то хрустит. Мини-игра: вытащить записку. Записка сдаётся первой.",
+          "result": {
+            "addInventory": {
+              "id": "crumpled_note",
+              "name": "Скомканная записка",
+              "hoverText": "Хрустит. Содержит больше тревоги, чем бумаги."
+            }
+          }
+        },
+        {
+          "action": "step_away",
+          "label": "Отойти",
+          "condition": "always",
+          "choiceScope": "local",
+          "textToken": "MIRROR_STEP_AWAY",
+          "text": "Вы отходите от зеркала. Овечки делают вид, что ничего не было.",
+          "result": { "returnToPanorama": true }
+        }
+      ]
+    },
+    {
+      "id": "wardrobe",
+      "nameToken": "WARDROBE_LABEL",
+      "name": "Шкаф",
+      "hoverText": "Тайник",
+      "position": { "x": 1168, "y": 445, "radius": 92, "width": 190, "height": 355, "labelY": 286 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Открыть шкаф",
+          "condition": "always",
+          "textToken": "WARDROBE_SUBSCENE",
+          "text": "Крупный план шкафа. Внутри униформа, кривая вешалка и чувство, что мебель что-то скрывает.",
+          "result": { "addFlag": "wardrobe_examined" },
+          "animation": "cyan-pulse",
+          "soundEvent": "closet_creak",
+          "showInChoices": false
+        },
+        {
+          "action": "take_uniform",
+          "label": "Взять униформу",
+          "condition": "notItem:intern_uniform",
+          "choiceScope": "local",
+          "textToken": "WARDROBE_TAKE_UNIFORM",
+          "text": "Чёрная. Нашивка блестит. Причиняю добро с 9 до 18.",
+          "result": {
+            "addFlag": "hasUniform",
+            "addInventory": {
+              "id": "intern_uniform",
+              "name": "Форма стажёра",
+              "hoverText": "Причиняю добро с 9 до 18."
+            }
+          }
+        },
+        {
+          "action": "fix_hanger",
+          "label": "Поправить кривую вешалку",
+          "condition": "notFlag:wardrobeSecretUnlocked",
+          "choiceScope": "local",
+          "textToken": "WARDROBE_FIX_HANGER",
+          "text": "Кривая вешалка выбивается. За ней щель.",
+          "result": { "addFlag": "wardrobeSecretUnlocked" }
+        },
+        {
+          "action": "reach_cache",
+          "label": "Запустить руку в тайник",
+          "condition": "hasFlag:wardrobeSecretUnlocked&notFlag:webQteStarted&notItem:cafeteria_keycard",
+          "choiceScope": "local",
+          "textToken": "WARDROBE_REACH_CACHE",
+          "text": "Темнота. QTE: не задеть Паутину Ужаса.",
+          "result": { "addFlag": "webQteStarted" }
+        },
+        {
+          "action": "avoid_web",
+          "label": "Не задеть Паутину Ужаса",
+          "condition": "hasFlag:webQteStarted&notItem:cafeteria_keycard",
+          "choiceScope": "local",
+          "textToken": "WARDROBE_WEB_SUCCESS",
+          "text": "Вы вытаскиваете ключ-карту, не дав бюрократии прилипнуть к руке.",
+          "result": {
+            "addInventory": {
+              "id": "cafeteria_keycard",
+              "name": "Ключ-карта столовой",
+              "hoverText": "Открывает места, где еда делает вид, что еда."
+            }
+          }
+        },
+        {
+          "action": "fail_web",
+          "label": "Дёрнуть руку",
+          "condition": "hasFlag:webQteStarted&notItem:cafeteria_keycard",
+          "choiceScope": "local",
+          "textToken": "WARDROBE_WEB_FAIL",
+          "text": "Рука прилипла. Паутина Ужаса оказалась липкой бюрократией.",
+          "result": { "addFlag": "webFailed" }
+        },
+        {
+          "action": "step_away",
+          "label": "Отойти",
+          "condition": "always",
+          "choiceScope": "local",
+          "textToken": "WARDROBE_STEP_AWAY",
+          "text": "Шкаф закрывается с видом сотрудника, который всё видел.",
+          "result": { "returnToPanorama": true }
+        }
+      ]
+    },
+    {
+      "id": "carafe",
+      "nameToken": "CARAFE_LABEL",
+      "name": "Графин",
+      "hoverText": "Ложная подсказка",
+      "position": { "x": 1298, "y": 642, "radius": 70, "width": 120, "height": 168, "labelY": 520 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "notFlag:carafe_examined",
+          "textToken": "CARAFE_DESC",
+          "text": "Вода. Хлорка. Муха. Ложная подсказка выглядит убедительнее настоящей.",
+          "result": { "addFlag": "carafe_examined" },
+          "animation": "cyan-pulse",
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "hasFlag:carafe_examined&notFlag:drankBadWater",
+          "textToken": "CARAFE_REPEAT",
+          "text": "Муха смотрит снизу вверх. Возможно, она здесь старший сотрудник.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "drink",
+          "label": "Глоток",
+          "condition": "hasFlag:carafe_examined&notFlag:drankBadWater",
+          "choiceScope": "local",
+          "textToken": "CARAFE_DRINK",
+          "text": "Вкус увольнения. Персонаж морщится. Муха уплывает.",
+          "result": { "addFlag": "drankBadWater" }
+        }
+      ]
+    },
+    {
+      "id": "poster",
+      "nameToken": "POSTER_LABEL",
+      "name": "Плакат",
+      "hoverText": "5 шагов",
+      "position": { "x": 555, "y": 338, "radius": 95, "width": 205, "height": 285, "labelY": 166 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Прочитать",
+          "condition": "hasFlag:poster_read",
+          "textToken": "POSTER_REPEAT",
+          "text": "Шаг 0 не указан. Видимо, это корпоративная тайна.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Прочитать",
+          "condition": "notFlag:poster_read",
+          "textToken": "POSTER_DESC",
+          "text": "1. Мечтай. 2. Планируй. 3. Манипулируй. 4. Монополизируй. 5. Наслаждайся. Снизу маркером: “Стажёр застрял на шаге 0”.",
+          "result": { "addFlag": "poster_read" },
+          "showInChoices": false
+        }
+      ]
+    },
+    {
+      "id": "window",
+      "nameToken": "WINDOW_LABEL",
+      "name": "Окно",
+      "hoverText": "Ноги",
+      "position": { "x": 840, "y": 384, "radius": 58, "width": 220, "height": 92, "labelY": 286 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Посмотреть",
+          "condition": "hasFlag:window_second",
+          "textToken": "WINDOW_THIRD",
+          "text": "Снаружи жизнь. Внутри стажировка.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Посмотреть",
+          "condition": "hasFlag:window_first",
+          "textToken": "WINDOW_SECOND",
+          "text": "Кто-то наступил в лужу. Лужа выглядит успешнее вас.",
+          "result": { "addFlag": "window_second" },
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Посмотреть",
+          "condition": "hasFlag:window_intro",
+          "textToken": "WINDOW_FIRST_REPEAT",
+          "text": "Совесть прошла мимо.",
+          "result": { "addFlag": "window_first" },
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Посмотреть",
+          "condition": "notFlag:window_intro",
+          "textToken": "WINDOW_FIRST",
+          "text": "Ботинки. Кроссовки. Чья-то совесть.",
+          "result": { "addFlag": "window_intro" },
+          "showInChoices": false
+        }
+      ]
+    },
+    {
+      "id": "alarm",
+      "nameToken": "ALARM_LABEL",
+      "name": "Будильник",
+      "hoverText": "Код 0918",
+      "position": { "x": 1014, "y": 560, "radius": 36, "width": 78, "height": 50, "labelY": 500 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Открыть крупный план",
+          "condition": "always",
+          "textToken": "ALARM_SUBSCENE",
+          "text": "Крупный план будильника. Треснутый циферблат и стрелки, которым явно есть что скрывать.",
+          "result": { "addFlag": "alarm_examined" },
+          "showInChoices": false
+        },
+        {
+          "action": "inspect_dial",
+          "label": "Осмотреть циферблат",
+          "condition": "always",
+          "choiceScope": "local",
+          "textToken": "ALARM_DIAL",
+          "text": "Циферблат треснут. Время — зло.",
+          "result": { "addFlag": "time_is_evil_note" }
+        },
+        {
+          "action": "set_hands",
+          "label": "Установить стрелки на 9:18",
+          "condition": "notFlag:alarmSet918",
+          "choiceScope": "local",
+          "textToken": "ALARM_SET_HANDS",
+          "text": "Часовая. Минутная. Мини-игра: выставить 9:18.",
+          "result": { "addFlag": "alarmSet918" }
+        },
+        {
+          "action": "press_button",
+          "label": "Нажать кнопку",
+          "condition": "hasFlag:alarmSet918&notFlag:code_0918",
+          "choiceScope": "local",
+          "textToken": "ALARM_BUTTON_SUCCESS",
+          "text": "Крышка открылась. Под ней аккуратно выцарапано: 0918.",
+          "result": { "addFlag": "code_0918" }
+        },
+        {
+          "action": "press_button_wrong",
+          "label": "Нажать кнопку",
+          "condition": "notFlag:alarmSet918",
+          "choiceScope": "local",
+          "textToken": "ALARM_BUTTON_FAIL",
+          "text": "Будильник орёт. Жабс за дверью: «Не твоё утро!»",
+          "result": { "addFlag": "alarmMistake" }
+        },
+        {
+          "action": "step_away",
+          "label": "Отойти",
+          "condition": "always",
+          "choiceScope": "local",
+          "textToken": "ALARM_STEP_AWAY",
+          "text": "Будильник остаётся на месте. Рабочий день пока нет.",
+          "result": { "returnToPanorama": true }
+        }
+      ]
+    },
+    {
+      "id": "bed",
+      "nameToken": "BED_LABEL",
+      "name": "Кровать",
+      "hoverText": "Карточка",
+      "position": { "x": 640, "y": 608, "radius": 120, "width": 455, "height": 160, "labelY": 470 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Заглянуть под кровать",
+          "condition": "always",
+          "textToken": "BED_SUBSCENE",
+          "text": "Крупный план под кроватью. Торчит уголок карточки. Рядом старый полосатый носок.",
+          "result": { "addFlag": "bed_examined" },
+          "showInChoices": false
+        },
+        {
+          "action": "pull_card",
+          "label": "Потянуть уголок карточки",
+          "condition": "notItem:inventory_card",
+          "choiceScope": "local",
+          "textToken": "BED_PULL_CARD",
+          "text": "Карточка выскальзывает. На обороте: «Ключ в тумбе. Код — число первого опоздания.»",
+          "result": {
+            "addFlag": "drawerHintSeen",
+            "addInventory": {
+              "id": "inventory_card",
+              "name": "Карточка из-под кровати",
+              "hoverText": "Ключ в тумбе. Код — число первого опоздания."
+            }
+          }
+        },
+        {
+          "action": "inspect_sock",
+          "label": "Осмотреть старый носок",
+          "condition": "notFlag:intern_name_404",
+          "choiceScope": "local",
+          "textToken": "BED_INSPECT_SOCK",
+          "text": "Старый носок. Полосатый. Вышито: 404.",
+          "result": { "addFlag": "intern_name_404" }
+        },
+        {
+          "action": "step_away",
+          "label": "Отойти",
+          "condition": "always",
+          "choiceScope": "local",
+          "textToken": "BED_STEP_AWAY",
+          "text": "Вы выбираетесь из-под кровати с новым уважением к пыли.",
+          "result": { "returnToPanorama": true }
+        }
+      ]
+    },
+    {
+      "id": "nightstand",
+      "nameToken": "NIGHTSTAND_LABEL",
+      "name": "Тумба",
+      "hoverText": "Кодовый замок",
+      "position": { "x": 1006, "y": 646, "radius": 68, "width": 150, "height": 150, "labelY": 535 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть замок",
+          "condition": "always",
+          "textToken": "NIGHTSTAND_SUBSCENE",
+          "text": "Крупный план тумбы. Кодовый замок показывает 0-0-0-0. Ящик скрипит заранее.",
+          "result": { "addFlag": "nightstand_examined" },
+          "showInChoices": false
+        },
+        {
+          "action": "try_code_wrong",
+          "label": "Крутить наугад",
+          "condition": "notFlag:code_0918&notFlag:drawerUnlocked",
+          "choiceScope": "local",
+          "textToken": "NIGHTSTAND_WRONG_CODE",
+          "text": "Замок обиженно щёлкает. Даже тумба требует доказательств.",
+          "result": { "addFlag": "wrongDrawerCode" }
+        },
+        {
+          "action": "enter_0918",
+          "label": "Ввести 0918",
+          "condition": "hasFlag:code_0918&notFlag:drawerUnlocked",
+          "choiceScope": "local",
+          "textToken": "NIGHTSTAND_ENTER_CODE",
+          "text": "0-9-1-8. Замок сдаётся. Ящик можно открыть.",
+          "result": { "addFlag": "drawerUnlocked" }
+        },
+        {
+          "action": "open_drawer",
+          "label": "Открыть ящик",
+          "condition": "hasFlag:drawerUnlocked&notItem:door_key",
+          "choiceScope": "local",
+          "textToken": "NIGHTSTAND_OPEN_DRAWER",
+          "text": "Ящик скрипит. Внутри ключ от двери и пропуск стажёра.",
+          "result": {
+            "addFlag": "hasDoorKey",
+            "addInventory": [
+              {
+                "id": "door_key",
+                "name": "Ключ от двери",
+                "hoverText": "Открывает путь к кадровой неизбежности."
+              },
+              {
+                "id": "intern_pass",
+                "name": "Пропуск стажёра",
+                "hoverText": "Имя пока не указано. Это почти карьерный рост."
+              }
+            ]
+          }
+        },
+        {
+          "action": "step_away",
+          "label": "Отойти",
+          "condition": "always",
+          "choiceScope": "local",
+          "textToken": "NIGHTSTAND_STEP_AWAY",
+          "text": "Тумба остаётся скрипеть в рамках должностной инструкции.",
+          "result": { "returnToPanorama": true }
+        }
+      ]
+    },
+    {
+      "id": "exit_door",
+      "nameToken": "EXIT_DOOR_LABEL",
+      "name": "Дверь",
+      "hoverText": "Отдел кадров",
+      "position": { "x": 1655, "y": 478, "radius": 90, "width": 155, "height": 365, "labelY": 260 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "hasItem:door_key",
+          "textToken": "EXIT_DOOR_READY",
+          "text": "Ключ подходит. Отдел кадров ждёт за дверью с улыбкой формы 2-Б.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "notItem:door_key",
+          "textToken": "EXIT_DOOR_LOCKED",
+          "text": "Дверь закрыта. Нужен ключ из тумбы.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "leave",
+          "label": "Выйти",
+          "condition": "hasItem:door_key",
+          "choiceScope": "local",
+          "textToken": "LEAVE_TO_HR",
+          "text": "Вы выходите в коридор. Отдел кадров уже делает вид, что рад вас видеть.",
+          "result": { "sceneChange": "2_1_archive" }
+        }
+      ]
+    }
+  ]
+}

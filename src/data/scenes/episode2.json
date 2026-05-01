@@ -1,0 +1,358 @@
+{
+  "sceneId": "2_1_archive",
+  "episode": 2,
+  "title": "Отдел кадров",
+  "background": "hr_office_panorama",
+  "initialMusic": "hr_mold_ambience",
+  "entryTextToken": "HR_ENTRY",
+  "entryText": "Пахнет плесенью. Мелкий шрифт внизу.",
+  "objects": [
+    {
+      "id": "hr_room",
+      "nameToken": "HR_ROOM_LABEL",
+      "name": "Отдел кадров",
+      "position": { "x": 885, "y": 455, "radius": 1 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Расписаться в ведомости",
+          "condition": "always",
+          "textToken": "HR_ROOM_DESC",
+          "text": "Пахнет плесенью. Мелкий шрифт внизу.",
+          "result": { "addFlag": "hr_room_examined" },
+          "soundEvent": "ui_page"
+        }
+      ]
+    },
+    {
+      "id": "hr_desk",
+      "nameToken": "HR_DESK_LABEL",
+      "name": "Стол с заявлением",
+      "hoverText": "Бумаги",
+      "position": { "x": 360, "y": 655, "radius": 145, "width": 520, "height": 280, "labelY": 475 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "hasFlag:signedContract",
+          "textToken": "HR_DESK_SIGNED",
+          "text": "Заявление довольно лежит на столе. Оно выглядит трудоустроенным лучше вас.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "notFlag:signedContract",
+          "textToken": "HR_DESK_DESC",
+          "text": "Заявление на трудостройство. Мелкий шрифт внизу.",
+          "result": { "addFlag": "employmentFormSeen" },
+          "showInChoices": false
+        },
+        {
+          "action": "sign_blind",
+          "label": "Подписать не глядя",
+          "condition": "hasFlag:employmentFormSeen&notFlag:signedContract",
+          "textToken": "SIGN_BLIND",
+          "text": "Вы — пешка. Поздравляем.",
+          "result": {
+            "addFlag": "signedContract",
+            "autoTrigger": { "objectId": "boss_jabs", "action": "examine" }
+          }
+        },
+        {
+          "action": "read_small_print",
+          "label": "Вчитаться в мелкий шрифт",
+          "condition": "hasFlag:employmentFormSeen&notFlag:readSmallPrint&notFlag:signedContract",
+          "textToken": "READ_SMALL_PRINT",
+          "text": "Ящер. Душа 50%. Смех в рекламе.",
+          "result": { "addFlag": "readSmallPrint" }
+        },
+        {
+          "action": "sign_after_reading",
+          "label": "Подписать",
+          "condition": "hasFlag:readSmallPrint&notFlag:signedContract",
+          "textToken": "SIGN_AFTER_READING",
+          "text": "Подпись похожа на крик. Документ доволен.",
+          "result": {
+            "addFlag": "signedContract",
+            "autoTrigger": { "objectId": "boss_jabs", "action": "examine" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "paper_drone",
+      "nameToken": "PAPER_DRONE_LABEL",
+      "name": "Дрон-скрепка",
+      "hoverText": "Жужжит",
+      "position": { "x": 594, "y": 322, "radius": 72, "width": 150, "height": 145, "labelY": 230 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "hasFlag:droneRecognizedPlayer",
+          "textToken": "DRONE_REPEAT_SMILE",
+          "text": "Дрон узнаёт вас. Это не комплимент.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "hasFlag:annoyedDrone",
+          "textToken": "DRONE_REPEAT_ANNOYED",
+          "text": "Дрон держит дистанцию. Профессионал.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "notFlag:droneRecognizedPlayer&notFlag:annoyedDrone",
+          "textToken": "DRONE_DESC",
+          "text": "Смотрит. Запоминает лицо.",
+          "result": { "addFlag": "drone_examined" },
+          "showInChoices": false
+        },
+        {
+          "action": "smile",
+          "label": "Улыбнуться",
+          "condition": "hasFlag:drone_examined&notFlag:droneRecognizedPlayer&notFlag:annoyedDrone",
+          "textToken": "DRONE_SMILE",
+          "text": "Вспышка. Теперь ты в базе.",
+          "result": { "addFlag": "droneRecognizedPlayer" }
+        },
+        {
+          "action": "swat",
+          "label": "Отмахнуться",
+          "condition": "hasFlag:drone_examined&notFlag:droneRecognizedPlayer&notFlag:annoyedDrone",
+          "textToken": "DRONE_SWAT",
+          "text": "Дрон уворачивается. Жужжит громче.",
+          "result": { "addFlag": "annoyedDrone" }
+        }
+      ]
+    },
+    {
+      "id": "employee_poster",
+      "nameToken": "EMPLOYEE_POSTER_LABEL",
+      "name": "Плакат «Сотрудник месяца»",
+      "hoverText": "Жабс",
+      "condition": "notFlag:signedContract",
+      "position": { "x": 1427, "y": 362, "radius": 105, "width": 220, "height": 260, "labelY": 250 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "always",
+          "textToken": "EMPLOYEE_POSTER_DESC",
+          "text": "Гордость. Одиночество. За неимением других.",
+          "result": { "addFlag": "employeePosterSeen" },
+          "showInChoices": false
+        },
+        {
+          "action": "look_closer",
+          "label": "Вглядеться",
+          "condition": "hasFlag:employeePosterSeen",
+          "textToken": "EMPLOYEE_POSTER_LOOK",
+          "text": "На портрете Жабс выглядит так, будто сам себя повысил.",
+          "result": {}
+        },
+        {
+          "action": "look_away",
+          "label": "Отвернуться",
+          "condition": "hasFlag:employeePosterSeen",
+          "textToken": "EMPLOYEE_POSTER_AWAY",
+          "text": "Плакат продолжает смотреть в спину. Начальство так умеет.",
+          "result": {}
+        }
+      ]
+    },
+    {
+      "id": "culture_board",
+      "nameToken": "CULTURE_BOARD_LABEL",
+      "name": "Доска «Корпоративная культура»",
+      "hoverText": "Лозунги",
+      "position": { "x": 228, "y": 340, "radius": 92, "width": 170, "height": 230, "labelY": 205 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Прочитать",
+          "condition": "hasFlag:cultureBoardSeen",
+          "textToken": "CULTURE_BOARD_REPEAT",
+          "text": "Под каждым словом приписка: “отсутствует”.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Прочитать",
+          "condition": "notFlag:cultureBoardSeen",
+          "textToken": "CULTURE_BOARD_DESC",
+          "text": "ПОКОРНОСТЬ. ЭФФЕКТИВНОСТЬ. ПРЕДАННОСТЬ.",
+          "result": { "addFlag": "cultureBoardSeen" },
+          "showInChoices": false
+        }
+      ]
+    },
+    {
+      "id": "clock",
+      "nameToken": "CLOCK_LABEL",
+      "name": "Часы",
+      "hoverText": "Тик-так",
+      "position": { "x": 1128, "y": 398, "radius": 42, "width": 80, "height": 80, "labelY": 330 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Посмотреть",
+          "condition": "hasFlag:clockSeen",
+          "textToken": "CLOCK_REPEAT",
+          "text": "Стрелки показывают 8:59. Они боятся наступить на рабочий день.",
+          "result": {},
+          "showInChoices": false
+        },
+        {
+          "action": "examine",
+          "label": "Посмотреть",
+          "condition": "notFlag:clockSeen",
+          "textToken": "CLOCK_DESC",
+          "text": "ВРЕМЯ — ЗЛО. Опаздываешь — зло побеждает без тебя.",
+          "result": { "addFlag": "clockSeen" },
+          "showInChoices": false
+        }
+      ]
+    },
+    {
+      "id": "chair",
+      "nameToken": "CHAIR_LABEL",
+      "name": "Стул",
+      "hoverText": "Сломан",
+      "position": { "x": 815, "y": 558, "radius": 82, "width": 130, "height": 180, "labelY": 440 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "always",
+          "textToken": "CHAIR_DESC",
+          "text": "Стул стажёра. Одна ножка короче.",
+          "result": { "addFlag": "chairSeen" },
+          "showInChoices": false
+        },
+        {
+          "action": "sit",
+          "label": "Сесть",
+          "condition": "hasFlag:chairSeen",
+          "textToken": "CHAIR_SIT",
+          "text": "Вы падаете лицом в заявление. Документ принимает это за подпись.",
+          "result": {
+            "addFlag": "signedContract",
+            "autoTrigger": { "objectId": "boss_jabs", "action": "examine" }
+          }
+        },
+        {
+          "action": "avoid",
+          "label": "Не рисковать",
+          "condition": "hasFlag:chairSeen",
+          "textToken": "CHAIR_AVOID",
+          "text": "Стул разочарован. Он готовился.",
+          "result": {}
+        }
+      ]
+    },
+    {
+      "id": "trash_bin",
+      "nameToken": "TRASH_BIN_LABEL",
+      "name": "Урна",
+      "hoverText": "Полна",
+      "position": { "x": 80, "y": 792, "radius": 70, "width": 160, "height": 125, "labelY": 690 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "always",
+          "textToken": "TRASH_DESC",
+          "text": "Скомканные заявления. Кто-то не прошёл.",
+          "result": { "addFlag": "trashSeen" },
+          "showInChoices": false
+        },
+        {
+          "action": "unfold",
+          "label": "Развернуть одно",
+          "condition": "hasFlag:trashSeen",
+          "textToken": "TRASH_UNFOLD",
+          "text": "“Хочу быть героем. Ошибся дверью.”",
+          "result": {}
+        },
+        {
+          "action": "leave",
+          "label": "Оставить",
+          "condition": "hasFlag:trashSeen",
+          "textToken": "TRASH_LEAVE",
+          "text": "Урна хранит чужие мечты лучше отдела кадров.",
+          "result": {}
+        }
+      ]
+    },
+    {
+      "id": "coffee_machine",
+      "nameToken": "COFFEE_MACHINE_LABEL",
+      "name": "Кофейный автомат",
+      "hoverText": "Гудит",
+      "position": { "x": 33, "y": 398, "radius": 72, "width": 110, "height": 245, "labelY": 245 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Осмотреть",
+          "condition": "always",
+          "textToken": "COFFEE_DESC",
+          "text": "Кнопка “ЗЛО-ЭСПРЕССО”.",
+          "result": { "addFlag": "coffeeSeen" },
+          "showInChoices": false
+        },
+        {
+          "action": "press",
+          "label": "Нажать",
+          "condition": "hasFlag:coffeeSeen&notFlag:sawEvilCoffee",
+          "textToken": "COFFEE_PRESS",
+          "text": "Из автомата капает тёмная жидкость. На донышке: “Вызывает приступы доброты — запрещено”.",
+          "result": { "addFlag": "sawEvilCoffee" }
+        },
+        {
+          "action": "step_away",
+          "label": "Отойти",
+          "condition": "hasFlag:coffeeSeen",
+          "textToken": "COFFEE_AWAY",
+          "text": "Автомат обиженно гудит.",
+          "result": {}
+        }
+      ]
+    },
+    {
+      "id": "boss_jabs",
+      "nameToken": "BOSS_JABS_LABEL",
+      "name": "Босс Жабс",
+      "hoverText": "Начальник",
+      "condition": "hasFlag:signedContract",
+      "position": { "x": 1427, "y": 362, "radius": 105, "width": 220, "height": 260, "labelY": 250 },
+      "interactions": [
+        {
+          "action": "examine",
+          "label": "Подойти",
+          "condition": "always",
+          "textToken": "BOSS_JABS_SCENE",
+          "text": "Жабс: “Герой! Холл! Пончик! Бросай!”",
+          "result": {
+            "addFlag": "hasDonut",
+            "addInventory": {
+              "id": "stale_donut",
+              "name": "Черствый пончик “Задержка-3000”",
+              "hoverText": "Бросается. Черствее тебя."
+            },
+            "sceneChange": "3_1_rooftop"
+          },
+          "showInChoices": false
+        }
+      ]
+    }
+  ]
+}

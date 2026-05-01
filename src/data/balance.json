@@ -1,0 +1,20 @@
+{
+  "initialTimeRemaining": 180,
+  "sceneTransitionCost": 8,
+  "failedQteTimePenalty": 15,
+  "qteByEpisode": {
+    "1": {
+      "timeLimit": 3,
+      "optionCount": 3
+    },
+    "2": {
+      "timeLimit": 2.5,
+      "optionCount": 4
+    },
+    "3": {
+      "timeLimit": 2,
+      "optionCount": 4,
+      "hasPunishingEmptyChoice": true
+    }
+  }
+}
